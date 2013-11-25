@@ -106,6 +106,8 @@ queue.tasks =
       func: (cb)->
         await getPythonBin defer e, pyothon_bin
         return cb e if e
+        await exec "/usr/bin/env #{pyothon_bin} #{cli} config encoding utf-8", cwd: workingDirectory, defer e
+        return cb e if e
         await exec "/usr/bin/env #{pyothon_bin} #{cli} list --no-colors", cwd: workingDirectory, defer e, out, err
         if e && err.match /user is not logged in|Verification code required/
           stats.requireLogin = true
