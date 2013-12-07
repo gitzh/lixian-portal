@@ -61,8 +61,6 @@ exports.startCron = ->
     await setTimeout defer(), 100
 
 exports.init = (cb)->
-  await exec "mkdir -p Downloads", cwd: __dirname, defer e
-  return cb e if e 
   cb null
 
 getPythonBin = (cb)->
@@ -175,6 +173,8 @@ queue.tasks =
     queue.append
       name: "登出"
       func: (cb)->
+        await getPythonBin defer e, pyothon_bin
+        return cb e if e
         await exec "/usr/bin/env #{pyothon_bin} #{cli} logout", cwd: workingDirectory, defer e, out, err
         queue.tasks.updateTasklist()
         cb null
