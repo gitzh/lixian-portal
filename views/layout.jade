@@ -1,13 +1,13 @@
 !!!
 html
   head
-    script(src='jquery/jquery.min.js')
-    script(src='bootstrap/dist/js/bootstrap.min.js')
-    script(src='bootswatch/assets/js/bootswatch.js')
-    link(href='bootstrap/dist/css/bootstrap.min.js',rel='stylesheet')
+    meta(charset='utf8')
     link(href='bootswatch/united/bootstrap.min.css',rel='stylesheet')
     link(href='bootswatch/assets/css/bootswatch.min.css',rel='stylesheet')
     link(href='font-awesome/css/font-awesome.min.css',rel='stylesheet')
+    script(src='jquery/jquery.min.js')
+    script(src='bootstrap/dist/js/bootstrap.min.js')
+    script(src='bootswatch/assets/js/bootswatch.js')
     title lixian
   body
     .container
@@ -15,8 +15,8 @@ html
       if info.stats.task
         h6 正在进行任务： #{info.stats.task.name}
       h6 取回速度: #{info.stats.speed}
-      .row-fluid
-        .span12
+      .row
+        .col-lg-12
           block content
       footer
         a(href='https://github.com/layerssss/lixian-portal') lixian-portal by mic

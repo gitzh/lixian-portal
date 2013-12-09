@@ -79,7 +79,7 @@ queue.tasks =
       func: (cb)->
         await getPythonBin defer e, pyothon_bin
         return cb e if e
-        stats.retrieving = spawn '/usr/bin/env', [pyothon_bin, cli, 'download', '--continue', '--no-hash', task.id], stdio: 'pipe', cwd: workingDirectory
+        stats.retrieving = spawn pyothon_bin, [cli, 'download', '--continue', '--no-hash', task.id], stdio: 'pipe', cwd: workingDirectory
         errBuffer = []
         stats.retrieving.task = task
         new lazy(stats.retrieving.stderr).lines.forEach (line)->
@@ -104,9 +104,9 @@ queue.tasks =
       func: (cb)->
         await getPythonBin defer e, pyothon_bin
         return cb e if e
-        await exec "/usr/bin/env #{pyothon_bin} #{cli} config encoding utf-8", cwd: workingDirectory, defer e
+        await exec "#{pyothon_bin} #{cli} config encoding utf-8", cwd: workingDirectory, defer e
         return cb e if e
-        await exec "/usr/bin/env #{pyothon_bin} #{cli} list --no-colors", cwd: workingDirectory, defer e, out, err
+        await exec "#{pyothon_bin} #{cli} list --no-colors", cwd: workingDirectory, defer e, out, err
         if e && err.match /user is not logged in|Verification code required/
           stats.requireLogin = true
           return cb e
@@ -133,18 +133,20 @@ queue.tasks =
       func: (cb)->
         await getPythonBin defer e, pyothon_bin
         return cb e if e
-        await exec "/usr/bin/env #{pyothon_bin} #{cli} delete #{id}", cwd: workingDirectory, defer e, out, err
+        await exec "#{pyothon_bin} #{cli} delete #{id}", cwd: workingDirectory, defer e, out, err
         return cb e if e
         queue.tasks.updateTasklist()
         cb null
 
-  login: (username, password, vcode='', cb)->
+  login: (username, password, vcode, cb)->
     await getPythonBin defer e, pyothon_bin
     return cb e if e
+    console.log vcode
     if vcode
-      await exec "/usr/bin/env #{pyothon_bin} #{cli} login #{username} #{password} --verification-code-input=#{vcode}", cwd: workingDirectory, defer e, out, err
+      await exec "#{pyothon_bin} #{cli} login #{username} #{password} --verification-code-input=#{vcode}", cwd: workingDirectory, defer e, out, err
     else
-      await exec "/usr/bin/env #{pyothon_bin} #{cli} login #{username} #{password} --verification-code-path .lixian-portal-vcode.jpg --verification-code-input-later", cwd: workingDirectory, defer e, out, err
+      await exec "#{pyothon_bin} #{cli} login #{username} #{password} --verification-code-path .lixian-portal-vcode.jpg --verification-code-input-later", cwd: workingDirectory, defer e, out, err
+      console.log out
       if e && out.match /--verification-code-input/
         await fs.readFile (path.join workingDirectory, ".lixian-portal-vcode.jpg"), defer e, stats.requireVerificationCode
         return cb e if e
@@ -162,10 +164,6 @@ queue.tasks =
     stats.requireVerificationCode = null
     stats.password = ''
     stats.username = ''
-    await exec "/usr/bin/env #{pyothon_bin} #{cli} config username #{username}", cwd: workingDirectory, defer e, out, err
-    return cb e if e
-    await exec "/usr/bin/env #{pyothon_bin} #{cli} config password #{password}", cwd: workingDirectory, defer e, out, err
-    return cb e if e
     queue.tasks.updateTasklist()
     cb null
         
@@ -175,7 +173,7 @@ queue.tasks =
       func: (cb)->
         await getPythonBin defer e, pyothon_bin
         return cb e if e
-        await exec "/usr/bin/env #{pyothon_bin} #{cli} logout", cwd: workingDirectory, defer e, out, err
+        await exec "#{pyothon_bin} #{cli} logout", cwd: workingDirectory, defer e, out, err
         queue.tasks.updateTasklist()
         cb null
 
@@ -185,7 +183,7 @@ queue.tasks =
       func: (cb)->
         await getPythonBin defer e, pyothon_bin
         return cb e if e
-        await exec "/usr/bin/env #{pyothon_bin} #{cli} add #{torrent}", cwd: workingDirectory, defer e, out, err
+        await exec "#{pyothon_bin} #{cli} add #{torrent}", cwd: workingDirectory, defer e, out, err
         return cb e if e
         queue.tasks.updateTasklist()
         cb null
@@ -195,7 +193,7 @@ queue.tasks =
       func: (cb)->
         await getPythonBin defer e, pyothon_bin
         return cb e if e
-        await exec "/usr/bin/env #{pyothon_bin} #{cli} add \"#{url}\"", cwd: workingDirectory, defer e, out, err
+        await exec "#{pyothon_bin} #{cli} add \"#{url}\"", cwd: workingDirectory, defer e, out, err
         return cb e if e
         queue.tasks.updateTasklist()
         cb null

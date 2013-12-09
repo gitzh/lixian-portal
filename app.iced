@@ -75,4 +75,6 @@ await client.init defer e
 throw e if e
 
 (server = http.createServer app).listen (Number process.env.PORT or 3000), ->
-  console.log "portal ready on http://#{server.address().address}:#{server.address().port}/"
+  address = server.address().address
+  address = '127.0.0.1' if address == '0.0.0.0'
+  console.log "portal ready on http://#{address}:#{server.address().port}/"
