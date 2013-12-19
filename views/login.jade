@@ -3,7 +3,7 @@ block content
   form.form-inline(method='post',action='/login',role='form')
     .form-group
       label.sr-only 用户名
-      input.form-control(name='username',type='email',placeholder='用户名 / 邮箱',value=info.stats.username||'')
+      input.form-control(name='username',type='text',placeholder='用户名 / 邮箱',value=info.stats.username||'')
     .form-group
       label.sr-only 密码
       input.form-control(name='password',type='password',placeholder='密码',value=info.stats.password||'')
